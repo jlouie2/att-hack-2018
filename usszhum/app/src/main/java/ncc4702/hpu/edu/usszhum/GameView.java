@@ -24,6 +24,7 @@ import android.view.SurfaceView;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
 
 //more imports from 6.13.1
@@ -33,11 +34,40 @@ import java.util.Random;
  */
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
-    private static final String TAG = "CannonView";//for logging errors
+    private static final String TAG = "GameView";//for logging errors
 
     //constants for game play
     public static final int MISS_PENALTY = 2; //seconds deducted on a miss
     public static final int HIT_REWARD = 3; //secondsadded on a hit
+
+    //constants for hall rows
+    public static final int ROW_WIDTH = 1/5;
+
+    //constants for the Hallway
+    public static final int HALLWAY_WIDTH_PERCENT = 1/5;
+    public static final int[][] STAGE_1 = {
+            {0,0,0,0,0},
+            {0,0,0,0,0},
+            {0,1,0,0,0},
+            {0,0,0,1,1},
+            {0,1,1,0,0},
+            {0,0,1,0,0},
+            {0,0,0,0,0},
+            {1,0,0,0,0},
+            {1,1,1,0,0},
+            {0,0,0,0,1},
+            {0,0,1,0,0},
+            {0,1,1,1,1},
+            {0,0,0,0,0},
+            {1,0,1,1,0},
+            {0,0,1,1,1},
+            {0,0,0,0,0},
+            {1,0,1,1,1},
+            {0,0,0,0,0},
+            {1,0,0,0,1},
+            {0,0,1,0,0}
+
+    };
 
     //constants for the Cannon
     public static final double CANNON_BASE_RADIUS_PERCENT = 3.0 / 40;
@@ -71,8 +101,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private boolean dialogIsDisplayed = false;
 
     //game objects
-    private Cannon cannon;
+    ArrayList<int[]> level;
     private Obstacle mObstacle;//USED TO BE BLOCKER
+    private Hallway hall;
     //private ArrayList<Obstacle> targets;//USED TO BE TARGETS
 
     //dimension variables
@@ -157,46 +188,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     //reset all the screen elements and start a new game
     public void newGame() {
-        //consturct a new Cannon
-        cannon = new Cannon(this, (int) (CANNON_BASE_RADIUS_PERCENT * screenHeight), (int) (CANNON_BARREL_LENGTH_PERCENT * screenWidth), (int) (CANNON_BARREL_WIDTH_PERCENT * screenHeight));
-
-        Random random = new Random();//for determining random velocities
-        //targets = new ArrayList<>();
-
-        //initialize targetX for the first target from the left
-        int targetX = (int) (TARGET_FIRST_X_PERCENT * screenWidth);
-
-        //clculate Y coordinate of Targets
-        int targetY = (int) ((0.5 - TARGET_LENGTH_PERCENT / 2) * screenHeight);
-
-        //add TARGET_PIECES Targets to the Target list
-        for (int n = 0; n < TARGET_PIECES; n++) {
-
-            //determine a random velocity between min and max values for Target n
-            double velocity = screenHeight * (random.nextDouble() * (TARGET_MAX_SPEED_PERCENT - TARGET_MIN_SPEED_PERCENT) + TARGET_MIN_SPEED_PERCENT);
-
-            //alternate Target colors between dark and light
-            //int color = (n % 2 == 0) ? getResources().getColor(R.color.dark, getContext().getTheme()) : getResources().getColor(R.color.light, getContext().getTheme());
-
-            velocity *= -1; //reverse the initial velocity for next Target
-
-            //create and add a new Target to the Target list
-            //TODO PROBABLY NEED THIS BUT NEEDS TO BE MODIFIED PROPERLY
-            //targets.add(new Obstacle(this, Color.BLACK, HIT_REWARD, targetX, targetY));
-
-            //increase the x coordinate to position the next Target more to the right
-            targetX += (TARGET_WIDTH_PERCENT + TARGET_SPACING_PERCENT) * screenWidth;
+        level = new ArrayList<>();
+        for(int r = 0; r < STAGE_1.length; r++){
+            level.add(STAGE_1[r]);
         }
 
-        //create a new Obstacle. OBSTACLES USED TO BE BLOCKER
-//        mObstacle = new Obstacle(this, Color.BLACK, MISS_PENALTY,
-//                (int) (BLOCKER_X_PERCENT * screenWidth),
-//                (int) ((0.5 - BLOCKER_X_PERCENT / 2) * screenHeight),
-//                (int) (BLOCKER_WIDTH_PERCENT * screenWidth),
-//                (int) (BLOCKER_LENGTH_PERCENT * screenHeight),
-//                (float) (BLOCKER_SPEED_PERCENT) * screenHeight);
+        //construct new Hallway
+        hall = new Hallway(this, getResources().getColor(R.color.hallColor,
+                getContext().getTheme()), 0,
+                HALLWAY_WIDTH_PERCENT * screenWidth,
+                level);
 
-        timeLeft = 10; //start the countdown at 10 seconds
+
+        timeLeft = 20; //start the countdown at 10 seconds
 
         shotsFired = 0; //set the initial number of shots fired
         totalElapsedTime = 0.0; //set the time elapsed to zero
@@ -212,8 +216,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     //called repeatedly by the CannonThread to update game elements
     //TODO THIS PART NEEDS A BIT OF WORK
-//    private void updatePositions(double totalElapsedTimeMS) {
-//        double interval = totalElapsedTimeMS / 1000.0; //convert to seconds
+    private void updatePositions(double totalElapsedTimeMS) {
+        double interval = totalElapsedTimeMS / 1000.0; //convert to seconds
+
+        if(this.hall.getDistanceRemaining() > 0)
+            this.hall.update(interval);
 //
 //        //update cannonball's position if it is on the screen
 //        if (cannon.getPlayer() != null)
@@ -239,7 +246,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 //            showGameOverDialog(R.string.win);//show winning dialog
 //            gameOver = true;
 //        }
-//    }
+    }
 
     //aligns the barrel and fires a cannonball if a cannonball is not already on screen
     public void alignAndFireCannonball(MotionEvent event) {
@@ -255,7 +262,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         angle = Math.atan2(touchPoint.x, centerMinusY);
 
         //point the barrel at thte point where the scree was touched
-        cannon.align(angle);
+//        cannon.align(angle);
 
         //fire Player if there is not already a Player on screen
 //        if (cannon.getPlayer() == null || !cannon.getPlayer().isOnScreen()) {
@@ -314,7 +321,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         //canvas.drawText("HELLO?????????",150,100,textPaint);
 
 
-        cannon.draw(canvas);//draws the cannon
+//        cannon.draw(canvas);//draws the cannon
+        hall.draw(canvas);
 
         //draw the GameElements
         //cannon.getPlayer().draw(canvas);//THIS USED TO BE AN IF STATEMENT DO NOT NEED
@@ -416,7 +424,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         //the user touched the screen or dragged along the screen
         if(action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_MOVE){
             //fire the cannonball toward the touch point
-            alignAndFireCannonball(e);
+//            alignAndFireCannonball(e);
         }
         return true;
     }
@@ -451,10 +459,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                         long currentTime = System.currentTimeMillis();
                         double elapsedTimeMS = currentTime-previousFrameTime;
                         totalElapsedTime+=elapsedTimeMS/1000.0;
-                        //updatePositions(elapsedTimeMS);//update game state//THIS WAS COMMENTED OUT
+                        updatePositions(elapsedTimeMS);//update game state//THIS WAS COMMENTED OUT
                         testForCollisions();//test for GameElement collisions
                         drawGameElements(canvas);//draw using the canvas
-                        previousFrameTime = currentTime;//update previous time
+//                        previousFrameTime = currentTime;//update previous time
                     }
                 }finally{
                     //display canva's contents on the CannonView and enable other threads to use the Canvas
@@ -470,11 +478,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
             setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                    View.SYSTEM_UI_FLAG_FULLSCREEN |
-                    View.SYSTEM_UI_FLAG_IMMERSIVE);
+                            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                            View.SYSTEM_UI_FLAG_FULLSCREEN |
+                            View.SYSTEM_UI_FLAG_IMMERSIVE);
     }
 
     //show system bars and app bar
@@ -482,8 +490,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
             setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+                            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 
 }

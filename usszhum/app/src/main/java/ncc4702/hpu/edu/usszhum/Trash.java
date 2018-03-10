@@ -7,6 +7,6 @@ package ncc4702.hpu.edu.usszhum;
 public class Trash extends Obstacle {//THIS OBSTACLE IS 1x2
 
     public Trash(GameView view, int color, int hitPenalty, int y, int width) {
-        super(view, color, hitPenalty, y, width);
+        super(view, color, hitPenalty, y, width,1,2);
     }
 }
