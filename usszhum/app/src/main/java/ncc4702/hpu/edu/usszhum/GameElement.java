@@ -17,10 +17,10 @@ public class GameElement {
 
     //public constructor
     public GameElement(GameView view, int color, int soundId,
-                       int x, int y, int width, int length){
+                        int y, int width){
         this.view = view;
         paint.setColor(color);
-        shape = new Rect(x, y, x+width, y+length);
+        shape = new Rect(3, y, 3+width, y+3);
         this.soundId = soundId;
     }
 
