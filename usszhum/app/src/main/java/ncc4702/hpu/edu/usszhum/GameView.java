@@ -73,7 +73,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     //game objects
     private Cannon cannon;
     private Obstacle mObstacle;//USED TO BE BLOCKER
-    private ArrayList<Obstacle> targets;//USED TO BE TARGETS
+    //private ArrayList<Obstacle> targets;//USED TO BE TARGETS
 
     //dimension variables
     private int screenWidth;
@@ -161,7 +161,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         cannon = new Cannon(this, (int) (CANNON_BASE_RADIUS_PERCENT * screenHeight), (int) (CANNON_BARREL_LENGTH_PERCENT * screenWidth), (int) (CANNON_BARREL_WIDTH_PERCENT * screenHeight));
 
         Random random = new Random();//for determining random velocities
-        targets = new ArrayList<>();
+        //targets = new ArrayList<>();
 
         //initialize targetX for the first target from the left
         int targetX = (int) (TARGET_FIRST_X_PERCENT * screenWidth);
@@ -182,7 +182,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
             //create and add a new Target to the Target list
             //TODO PROBABLY NEED THIS BUT NEEDS TO BE MODIFIED PROPERLY
-            targets.add(new Obstacle(this, Color.BLACK, HIT_REWARD, targetX, targetY));
+            //targets.add(new Obstacle(this, Color.BLACK, HIT_REWARD, targetX, targetY));
 
             //increase the x coordinate to position the next Target more to the right
             targetX += (TARGET_WIDTH_PERCENT + TARGET_SPACING_PERCENT) * screenWidth;
@@ -212,34 +212,34 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     //called repeatedly by the CannonThread to update game elements
     //TODO THIS PART NEEDS A BIT OF WORK
-    private void updatePositions(double totalElapsedTimeMS) {
-        double interval = totalElapsedTimeMS / 1000.0; //convert to seconds
-
-        //update cannonball's position if it is on the screen
-        if (cannon.getPlayer() != null)
-            cannon.getPlayer().update(interval);
-
-        //mObstacle.update(interval);// update the mObstacle's position WAS COMMENTED OUT
-
-        for (GameElement target : targets)
-            target.update(interval);//update the target's position
-        timeLeft -= interval; //subtract from time left
-
-        if (timeLeft <= 0) {
-            timeLeft = 0.0;
-            gameOver = true;//the game is over
-            cannonThread.setRunning(false);//terminate thread
-            showGameOverDialog(R.string.lose);//show the losing dialog
-        }
-
-        //if all pieces have been hit
-
-        if (targets.isEmpty()) {
-            cannonThread.setRunning(false);//terminate thread
-            showGameOverDialog(R.string.win);//show winning dialog
-            gameOver = true;
-        }
-    }
+//    private void updatePositions(double totalElapsedTimeMS) {
+//        double interval = totalElapsedTimeMS / 1000.0; //convert to seconds
+//
+//        //update cannonball's position if it is on the screen
+//        if (cannon.getPlayer() != null)
+//            cannon.getPlayer().update(interval);
+//
+//        //mObstacle.update(interval);// update the mObstacle's position WAS COMMENTED OUT
+//
+//        for (GameElement target : targets)
+//            target.update(interval);//update the target's position
+//        timeLeft -= interval; //subtract from time left
+//
+//        if (timeLeft <= 0) {
+//            timeLeft = 0.0;
+//            gameOver = true;//the game is over
+//            cannonThread.setRunning(false);//terminate thread
+//            showGameOverDialog(R.string.lose);//show the losing dialog
+//        }
+//
+//        //if all pieces have been hit
+//
+//        if (targets.isEmpty()) {
+//            cannonThread.setRunning(false);//terminate thread
+//            showGameOverDialog(R.string.win);//show winning dialog
+//            gameOver = true;
+//        }
+//    }
 
     //aligns the barrel and fires a cannonball if a cannonball is not already on screen
     public void alignAndFireCannonball(MotionEvent event) {
@@ -310,11 +310,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 
         //display time remaining
-        canvas.drawText(getResources().getString(R.string.time_remaining_format, timeLeft),50,100,textPaint);
+        //canvas.drawText(getResources().getString(R.string.time_remaining_format, timeLeft),50,100,textPaint);
         //canvas.drawText("HELLO?????????",150,100,textPaint);
 
 
-        cannon.draw(canvas);//draw the cannon
+        cannon.draw(canvas);//draws the cannon
 
         //draw the GameElements
         //cannon.getPlayer().draw(canvas);//THIS USED TO BE AN IF STATEMENT DO NOT NEED
@@ -322,8 +322,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         //mObstacle.draw(canvas);//draw the mObstacle//DONT HAVE THAT
 
         //draw all of the Targets
-        for(GameElement target : targets)
-            target.draw(canvas);
+//        for(GameElement target : targets)
+//            target.draw(canvas);
     }
 
     //checks if the ball collides with the Obstacle or any of the Targets and handles the collisions
