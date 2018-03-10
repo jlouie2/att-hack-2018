@@ -10,7 +10,7 @@ public class Stuff {
 
 
 
-    public static GameElement[][] convert(int[][] data)
+    public static GameElement[][] convert(GameView view, int[][] data)
     {
         GameElement[][] gameobjects =  new GameElement[data.length][data[0].length];
         for(int i = 0; i < data.length;i++)
@@ -23,14 +23,14 @@ public class Stuff {
                         gameobjects[i][j] = null;
                         break;
                     case 1:
-                        gameobjects[i][j] = new Student(null,-1,-1,-1,-1);
+                        gameobjects[i][j] = new Student(view,-1,-1,-1,-1);
                         break;
                     case 2:
-                        gameobjects[i][j++] = new Trash(null,-1,-1,-1,-1);
+                        gameobjects[i][j++] = new Trash(view,-1,-1,-1,-1);
                         gameobjects[i][j-1] = gameobjects[i][j];
                         break;
                     case 3:
-                        gameobjects[i][j++] = new ThreeBlock(null,-1,-1,-1,-1);
+                        gameobjects[i][j++] = new ThreeBlock(view,-1,-1,-1,-1);
                         gameobjects[i][j++] = gameobjects[i][j-1];
                         gameobjects[i][j++] = gameobjects[i][j-1];
                         break;
@@ -40,16 +40,16 @@ public class Stuff {
                         {
                             switch(new Random().nextInt(count)) {
                                 case 1:
-                                    gameobjects[i][j] = new Student(null, -1, -1, -1, -1);
+                                    gameobjects[i][j] = new Student(view, -1, -1, -1, -1);
                                     count -= 1;
                                     break;
                                 case 2:
-                                    gameobjects[i][j++] = new Trash(null, -1, -1, -1, -1);
+                                    gameobjects[i][j++] = new Trash(view, -1, -1, -1, -1);
                                     gameobjects[i][j - 1] = gameobjects[i][j];
                                     count -= 2;
                                     break;
                                 case 3:
-                                    gameobjects[i][j++] = new ThreeBlock(null, -1, -1, -1, -1);
+                                    gameobjects[i][j++] = new ThreeBlock(view, -1, -1, -1, -1);
                                     gameobjects[i][j++] = gameobjects[i][j - 1];
                                     gameobjects[i][j++] = gameobjects[i][j - 1];
                                     count -=3;
