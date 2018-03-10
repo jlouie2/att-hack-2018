@@ -55,11 +55,12 @@ public class Cannon {
 
     //draws the Cannon on the Canvas
     public void draw(Canvas canvas){
-        //draw cannon barrel
-        canvas.drawLine(0,view.getScreenHeight()/2, barrelEnd.x, barrelEnd.y, paint);
+//        //draw cannon barrel
+//        canvas.drawLine(view.getScreenWidth()/2,view.getScreenHeight(), barrelEnd.x, barrelEnd.y, paint);
 
-        //draw cannon base
-        canvas.drawCircle(0,(int) view.getScreenHeight()/2, (int) baseRadius, paint);
+        //draw cannon base NOW AT THE BOTTOM
+        canvas.drawCircle(view.getScreenWidth()/2,view.getScreenHeight(), (int) baseRadius, paint);
+
 
     }
 
