@@ -16,11 +16,14 @@ public class GameElement {
     private int soundId; //the sound associated with this GameElement
 
     //public constructor
-    public GameElement(GameView view, int color, int soundId,
-                        int y, int width){
+    public GameElement(GameView view, int color, int soundId, int x,
+                        int y, int width, int height){
         this.view = view;
         paint.setColor(color);
-        shape = new Rect(3, y, 3+width, y+3);
+//        shape = new Rect(x, y+height, x+width, y);
+        shape = new Rect(x, y, x+width, y+height);
+        System.out.println(this.view.getScreenHeight());
+        System.out.println(this.view.getScreenWidth());
         this.soundId = soundId;
     }
 
