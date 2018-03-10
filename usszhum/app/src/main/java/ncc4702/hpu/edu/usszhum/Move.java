@@ -27,9 +27,17 @@ public class Move extends MainActivity{
             case MotionEvent.ACTION_DOWN: {
                 final int pointerIndex = MotionEventCompat.getActionIndex(ev);
                 final float x = MotionEventCompat.getX(ev, pointerIndex);
+<<<<<<< HEAD
 
                 // Remember where we started (for dragging)
                 mLastTouchX = x;
+=======
+                //final float y = MotionEventCompat.getY(ev, pointerIndex);
+
+                // Remember where we started (for dragging)
+                mLastTouchX = x;
+                //mLastTouchY = y;
+>>>>>>> origin/jocelyn
                 // Save the ID of this pointer (for dragging)
                 mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
                 break;
@@ -41,16 +49,31 @@ public class Move extends MainActivity{
                         MotionEventCompat.findPointerIndex(ev, mActivePointerId);
 
                 final float x = MotionEventCompat.getX(ev, pointerIndex);
+<<<<<<< HEAD
 
                 // Calculate the distance moved
                 final float dx = x - mLastTouchX;
 
                 mPosX += dx;
+=======
+                //final float y = MotionEventCompat.getY(ev, pointerIndex);
+
+                // Calculate the distance moved
+                final float dx = x - mLastTouchX;
+                //final float dy = y - mLastTouchY;
+
+                mPosX += dx;
+                //mPosY += dy;
+>>>>>>> origin/jocelyn
 
                 //invalidate();
 
                 // Remember this touch position for the next move event
                 mLastTouchX = x;
+<<<<<<< HEAD
+=======
+                //mLastTouchY = y;
+>>>>>>> origin/jocelyn
 
                 break;
             }
@@ -75,6 +98,10 @@ public class Move extends MainActivity{
                     // active pointer and adjust accordingly.
                     final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
                     mLastTouchX = MotionEventCompat.getX(ev, newPointerIndex);
+<<<<<<< HEAD
+=======
+                    //mLastTouchY = MotionEventCompat.getY(ev, newPointerIndex);
+>>>>>>> origin/jocelyn
                     mActivePointerId = MotionEventCompat.getPointerId(ev, newPointerIndex);
                 }
                 break;
