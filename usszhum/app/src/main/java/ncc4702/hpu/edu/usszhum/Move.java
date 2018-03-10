@@ -27,11 +27,9 @@ public class Move extends MainActivity{
             case MotionEvent.ACTION_DOWN: {
                 final int pointerIndex = MotionEventCompat.getActionIndex(ev);
                 final float x = MotionEventCompat.getX(ev, pointerIndex);
-                //final float y = MotionEventCompat.getY(ev, pointerIndex);
 
                 // Remember where we started (for dragging)
                 mLastTouchX = x;
-                //mLastTouchY = y;
                 // Save the ID of this pointer (for dragging)
                 mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
                 break;
@@ -43,20 +41,16 @@ public class Move extends MainActivity{
                         MotionEventCompat.findPointerIndex(ev, mActivePointerId);
 
                 final float x = MotionEventCompat.getX(ev, pointerIndex);
-                //final float y = MotionEventCompat.getY(ev, pointerIndex);
 
                 // Calculate the distance moved
                 final float dx = x - mLastTouchX;
-                //final float dy = y - mLastTouchY;
 
                 mPosX += dx;
-                //mPosY += dy;
 
                 //invalidate();
 
                 // Remember this touch position for the next move event
                 mLastTouchX = x;
-                //mLastTouchY = y;
 
                 break;
             }
@@ -81,7 +75,6 @@ public class Move extends MainActivity{
                     // active pointer and adjust accordingly.
                     final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
                     mLastTouchX = MotionEventCompat.getX(ev, newPointerIndex);
-                    //mLastTouchY = MotionEventCompat.getY(ev, newPointerIndex);
                     mActivePointerId = MotionEventCompat.getPointerId(ev, newPointerIndex);
                 }
                 break;
