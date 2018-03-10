@@ -24,6 +24,7 @@ import android.view.SurfaceView;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
 
 //more imports from 6.13.1
@@ -33,11 +34,37 @@ import java.util.Random;
  */
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
-    private static final String TAG = "CannonView";//for logging errors
+    private static final String TAG = "GameView";//for logging errors
 
     //constants for game play
     public static final int MISS_PENALTY = 2; //seconds deducted on a miss
     public static final int HIT_REWARD = 3; //secondsadded on a hit
+
+    //constants for the Hallway
+    public static final int HALLWAY_WIDTH = 5;
+    public static final int[][] STAGE_1 = {
+            {0,0,0,0,0},
+            {0,0,0,0,0},
+            {0,1,0,0,0},
+            {0,0,0,1,1},
+            {0,1,1,0,0},
+            {0,0,1,0,0},
+            {0,0,0,0,0},
+            {1,0,0,0,0},
+            {1,1,1,0,0},
+            {0,0,0,0,1},
+            {0,0,1,0,0},
+            {0,1,1,1,1},
+            {0,0,0,0,0},
+            {1,0,1,1,0},
+            {0,0,1,1,1},
+            {0,0,0,0,0},
+            {1,0,1,1,1},
+            {0,0,0,0,0},
+            {1,0,0,0,1},
+            {0,0,1,0,0}
+
+    };
 
     //constants for the Cannon
     public static final double CANNON_BASE_RADIUS_PERCENT = 3.0 / 40;
