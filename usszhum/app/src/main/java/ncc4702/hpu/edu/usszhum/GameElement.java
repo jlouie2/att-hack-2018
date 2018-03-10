@@ -17,7 +17,7 @@ public class GameElement {
 
     //public constructor
     public GameElement(GameView view, int color, int soundId, int x,
-                        int y, int width, int height){
+                        int y, int width, int height, int velocityY){
         this.view = view;
         paint.setColor(color);
 //        shape = new Rect(x, y+height, x+width, y);

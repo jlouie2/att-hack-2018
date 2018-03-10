@@ -14,7 +14,7 @@ public class row extends GameElement{
     //constructor
     public row(GameView view, int color, int soundId, int x,
                int y, int width, int height, float velocityX, float velocityY){
-        super(view, color, soundId, x, y, width, height);
+        super(view, color, soundId, x, y, width, height,1);
         this.velocityY = velocityY;
 
     }

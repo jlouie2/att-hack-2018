@@ -102,7 +102,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     //game objects
     ArrayList<int[]> level;
-    private Cannon cannon;
     private Obstacle mObstacle;//USED TO BE BLOCKER
     private Hallway hall;
     //private ArrayList<Obstacle> targets;//USED TO BE TARGETS

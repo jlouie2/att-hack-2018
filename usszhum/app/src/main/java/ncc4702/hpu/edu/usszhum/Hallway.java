@@ -23,7 +23,7 @@ public class Hallway extends GameElement{
     //constructor
     public Hallway(GameView view, int color, int soundId,
                    int tileSide, ArrayList<int[]> hallElements){
-        super(view, color, soundId, 0, 0, view.getScreenWidth() , view.getHeight()+336);
+        super(view, color, soundId, 0, 0, view.getScreenWidth() , view.getHeight()+336, 1);
         this.view = view;
         this.hallElements = hallElements;
         Log.d(TAG, "screen:" + view.getScreenWidth() + ":" + view.getScreenHeight());

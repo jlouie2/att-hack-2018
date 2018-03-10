@@ -13,7 +13,7 @@ public class Obstacle extends GameElement {
                 (startColumn + 1) * tileSide - tileSide/2, // add width of rows, subtract by half a tile to get center
                 (startRow + 1) * tileSide - tileSide/2,
                 tileSide * width,
-                tileSide);
+                tileSide,1);
         //tileside = 1/5 screen width
         this.hitPenalty = hitPenalty;
     }
