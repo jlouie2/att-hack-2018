@@ -12,13 +12,18 @@ public class GameElement {
     protected GameView view; // the view that contains this GameElement
     protected Paint paint = new Paint(); //Paint to draw this GamElement
     protected Rect shape; // the GameElement's rectangular bounds
-    private float velocityY; //the vertical velocity of this GameElement
+    public float velocityY; //the vertical velocity of this GameElement
     private int soundId; //the sound associated with this GameElement
 
     //public constructor
     public GameElement(GameView view, int color, int soundId, int x,
+<<<<<<< HEAD
                         int y, int width, int height, int velocityY){
+=======
+                        int y, int width, int height, float velocityY){
+>>>>>>> origin/Tyler
         this.view = view;
+        this.velocityY = velocityY;
         paint.setColor(color);
 //        shape = new Rect(x, y+height, x+width, y);
         shape = new Rect(x, y, x+width, y+height);
@@ -34,8 +39,8 @@ public class GameElement {
         shape.offset(0,(int) (velocityY*interval));
 
         //if this GameElement collides with the wall, reverse direction
-        if(shape.top <0 && velocityY < 0 || shape.bottom > view.getScreenHeight() && velocityY >0)
-            velocityY *= -1; //Don't know where getScreenHeight method comes from
+//        if(shape.top <0 && velocityY < 0 || shape.bottom > view.getScreenHeight() && velocityY >0)
+//            velocityY *= -1; //Don't know where getScreenHeight method comes from
     }
 
     //draws this GameElement on the given Canvas

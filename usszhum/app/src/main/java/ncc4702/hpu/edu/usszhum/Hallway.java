@@ -19,6 +19,7 @@ public class Hallway extends GameElement{
     private int height;
     private int width = 5;
     private ArrayList<int[]> hallElements;
+    private ArrayList<GameElement[]> gameElements;
 
     //constructor
     public Hallway(GameView view, int color, int soundId,
@@ -26,6 +27,7 @@ public class Hallway extends GameElement{
         super(view, color, soundId, 0, 0, view.getScreenWidth() , view.getHeight()+336, 1);
         this.view = view;
         this.hallElements = hallElements;
+        this.gameElements = new ArrayList<>();
         Log.d(TAG, "screen:" + view.getScreenWidth() + ":" + view.getScreenHeight());
         Log.d(TAG, "screen:" + view.getWidth() + ":" + view.getHeight());
     }
@@ -42,11 +44,18 @@ public class Hallway extends GameElement{
         this.hallElements.remove(0);
 
         String rowString = "";
+        int rowValue = 0;
         for(int i = 0; i < movingRow.length; i++){
+            rowValue += movingRow[i];
             rowString += movingRow[i] + ",";
         }
 
         Log.d(TAG, "ROW:" + rowString);
+
+        GameElement[] ge = GameView.convert(view, movingRow);
+        gameElements.add(ge);
+
+
         //calculate the cannonball velocity's x component
 //        int velocityX = (int) (GameView.CANNONBALL_SPEED_PERCENT *
 //                view.getScreenWidth() * Math.sin(barrelAngle));
