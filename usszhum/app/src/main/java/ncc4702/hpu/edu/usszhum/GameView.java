@@ -310,7 +310,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 
         //display time remaining
-        canvas.drawText(getResources().getString(R.string.time_remaining_format, timeLeft),50,100,textPaint);
+        //canvas.drawText(getResources().getString(R.string.time_remaining_format, timeLeft),50,100,textPaint);
         //canvas.drawText("HELLO?????????",150,100,textPaint);
 
 
