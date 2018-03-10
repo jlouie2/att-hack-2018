@@ -1,5 +1,7 @@
 package ncc4702.hpu.edu.usszhum;
 
+import android.util.Log;
+
 import java.util.Random;
 
 /**
@@ -7,7 +9,7 @@ import java.util.Random;
  */
 
 public class Stuff {
-
+    private static String TAG = "STUFF";
 
     public static GameElement[][] convert(GameView view, int[][] data) {
         GameElement[][] gameobjects = new GameElement[data.length][data[0].length];
@@ -73,38 +75,46 @@ public class Stuff {
             int count = 0;
 
             //Checks the next entry in that array to see it follows the chain of 1's
-            while ((j + count) < data.length && data[(j + 1) + count] != 0) count++;
+            while ((j + count) < data.length && data[(j) + count] != 0) count++;
 
             switch (count) {
                 case 0:
+                    Log.d(TAG, "null");
                     gameobjects[j] = null;
                     break;
                 case 1:
+                    Log.d(TAG, "Student");
                     gameobjects[j] = new Student(view, -1, -1, -1, -1);
                     break;
                 case 2:
+                    Log.d(TAG, "trash");
                     gameobjects[j++] = new Trash(view, -1, -1, -1, -1);
                     gameobjects[j - 1] = gameobjects[j];
                     break;
                 case 3:
+                    Log.d(TAG, "ThreeBlock");
                     gameobjects[j++] = new ThreeBlock(view, -1, -1, -1, -1);
                     gameobjects[j++] = gameobjects[j - 1];
                     gameobjects[j++] = gameobjects[j - 1];
                     break;
                 case 4:
+                    Log.d(TAG, "FOUR");
                     int counter = 4;
                     while (count >= 0) {
                         switch (new Random().nextInt(counter)) {
                             case 1:
+                                Log.d(TAG, "student");
                                 gameobjects[j] = new Student(view, -1, -1, -1, -1);
                                 counter -= 1;
                                 break;
                             case 2:
+                                Log.d(TAG, "trash");
                                 gameobjects[j++] = new Trash(view, -1, -1, -1, -1);
                                 gameobjects[j - 1] = gameobjects[j];
                                 counter -= 2;
                                 break;
                             case 3:
+                                Log.d(TAG, "threeblock");
                                 gameobjects[j++] = new ThreeBlock(view, -1, -1, -1, -1);
                                 gameobjects[j++] = gameobjects[j - 1];
                                 gameobjects[j++] = gameobjects[j - 1];
@@ -115,6 +125,7 @@ public class Stuff {
                     }
                     break;
                 default:
+                    Log.d(TAG, "default");
                     gameobjects[j] = null;
                     break;
 
