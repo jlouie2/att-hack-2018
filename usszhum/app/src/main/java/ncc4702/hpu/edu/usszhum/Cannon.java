@@ -15,12 +15,12 @@ public class Cannon {
     private int barrelLength; //Cannon barrel's length
     private Point barrelEnd = new Point(); //endpoint of Cannon's barrel
     private double barrelAngle; //angle of the Cannon's barrel
-    private Cannonball cannonball;; //the Cannon's Cannonball
+    private Player mPlayer;; //the Cannon's Player
     private Paint paint = new Paint();// Paint used to draw the cannon
-    private CannonView view; //view containing the Cannon
+    private GameView view; //view containing the Cannon
 
     //constructor
-    public Cannon(CannonView view, int baseRadius, int barrelLength, int barrelWidth){
+    public Cannon(GameView view, int baseRadius, int barrelLength, int barrelWidth){
         this.view = view;
         this.baseRadius = baseRadius;
         this.barrelLength = barrelLength;
@@ -36,21 +36,21 @@ public class Cannon {
         barrelEnd.y = (int)(-barrelLength*Math.cos(barrelAngle))+view.getScreenHeight()/2;//still don't know where this method comes from
     }
 
-    //creates and fires Cannonball in the direction Cannon points
+    //creates and fires Player in the direction Cannon points
     public void fireCannonball(){
-        //calculate the Cannonball velocity's x component
-        int velocityX = (int) (CannonView.CANNONBALL_SPEED_PERCENT*view.getScreenWidth()*Math.sin(barrelAngle));
+        //calculate the Player velocity's x component
+        int velocityX = (int) (GameView.CANNONBALL_SPEED_PERCENT*view.getScreenWidth()*Math.sin(barrelAngle));
 
-        //calculate the Cannonball velocity's y component
-        int velocityY = (int)(CannonView.CANNONBALL_SPEED_PERCENT*view.getScreenWidth()*-Math.cos(barrelAngle));
+        //calculate the Player velocity's y component
+        int velocityY = (int)(GameView.CANNONBALL_SPEED_PERCENT*view.getScreenWidth()*-Math.cos(barrelAngle));
 
-        //clculate the Cannonball's radius
-        int radius = (int) (view.getScreenHeight()*CannonView.CANNONBALL_RADIUS_PERCENT);
+        //clculate the Player's radius
+        int radius = (int) (view.getScreenHeight()* GameView.CANNONBALL_RADIUS_PERCENT);
 
-        //construct Cannonball and position it in the Cannon
-        cannonball = new Cannonball(view, Color.BLACK, CannonView.CANNON_SOUND_ID, -radius, view.getScreenHeight()/2 -radius, radius, velocityX, velocityY);
+        //construct Player and position it in the Cannon
+        mPlayer = new Player(view, Color.BLACK, GameView.CANNON_SOUND_ID, -radius, view.getScreenHeight()/2 -radius, radius, velocityX, velocityY);
 
-        cannonball.playSound();//play fire Cannonball sound
+        mPlayer.playSound();//play fire Player sound
     }
 
     //draws the Cannon on the Canvas
@@ -63,14 +63,14 @@ public class Cannon {
 
     }
 
-    //returns the Cannonball that this Cannon fired
-    public Cannonball getCannonball(){
-        return cannonball;
+    //returns the Player that this Cannon fired
+    public Player getPlayer(){
+        return mPlayer;
     }
 
-    //removes the Cannonball from the game
+    //removes the Player from the game
     public void removeCannonball(){
-        cannonball = null;
+        mPlayer = null;
     }
 
 
