@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">USS Zhum</string>
+
+    <!--6.4.3-->
+    <string name="results_format">Shots fired: %1$d\nTotal time: %2$.1f</string>
+    <string name="reset_game">Reset Game</string>
+    <string name="win">WINNER WINNER CHICKEN DINNER!!!</string>
+    <string name="lose">YOU FAILED!!!</string>
+    <string name="time_remaining_format">Time remaining: %.1f seconds</string>
+
+
 </resources>
