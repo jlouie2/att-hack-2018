@@ -7,6 +7,8 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -313,8 +315,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     //draws the game to the given Canvas
     public void drawGameElements(Canvas canvas){
         //clear the background
-        canvas.drawRect(0,0,canvas.getWidth(),canvas.getHeight(),backgroundPaint);
+        //canvas.drawRect(0,0,canvas.getWidth(),canvas.getHeight(),backgroundPaint);
 
+        //Tyler attempt here
+//        Bitmap bitfact = BitmapFactory.decodeResource(this.getResources(),R.drawable.player_1);
+//        Bitmap resized = Bitmap.createScaledBitmap(bitfact,200,200,false);
+//        canvas.drawBitmap(resized,100,100,this.backgroundPaint);
 
         //display time remaining
         //canvas.drawText(getResources().getString(R.string.time_remaining_format, timeLeft),50,100,textPaint);
@@ -323,6 +329,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 //        cannon.draw(canvas);//draws the cannon
         hall.draw(canvas);
+
+        Bitmap bitfact = BitmapFactory.decodeResource(this.getResources(),R.drawable.player_1);
+        Bitmap resized = Bitmap.createScaledBitmap(bitfact,200,200,false);
+        canvas.drawBitmap(resized,(screenWidth-200)/2,screenHeight-275,this.backgroundPaint);
 
         //draw the GameElements
         //cannon.getPlayer().draw(canvas);//THIS USED TO BE AN IF STATEMENT DO NOT NEED

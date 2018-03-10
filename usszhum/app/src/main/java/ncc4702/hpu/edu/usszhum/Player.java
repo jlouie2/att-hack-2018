@@ -55,7 +55,7 @@ public class Player extends GameElement{
     //draws the Player on the given canvas
     @Override
     public void draw(Canvas canvas){
-        canvas.drawCircle(shape.left+getRadius(), shape.top+getRadius(),getRadius(),paint);
+        //canvas.drawCircle(shape.left+getRadius(), shape.top+getRadius(),getRadius(),paint);
     }
 
 }
