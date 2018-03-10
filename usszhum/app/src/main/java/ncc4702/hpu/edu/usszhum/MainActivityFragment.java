@@ -14,7 +14,7 @@ import android.view.ViewGroup;
  */
 public class MainActivityFragment extends Fragment {
 
-    private CannonView cannonView;//Custom view to display the game
+    private GameView mGameView;//Custom view to display the game
 
 //    public MainActivityFragment() {
 //        // Required empty public constructor
@@ -32,7 +32,7 @@ public class MainActivityFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         //get a reference to the CannonView
-        cannonView = (CannonView) view.findViewById(R.id.cannonView);
+        mGameView = (GameView) view.findViewById(R.id.cannonView);
 
         return view;
     }
@@ -50,14 +50,14 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onPause(){
         super.onPause();
-        cannonView.stopGame();//terminates the game found in 6.13
+        mGameView.stopGame();//terminates the game found in 6.13
     }
 
     //when MainActivity is paused, MainActivityFragment releases resources
     @Override
     public void onDestroy(){
         super.onDestroy();
-        cannonView.releaseResources();//found also in 6.13
+        mGameView.releaseResources();//found also in 6.13
     }
 
 }

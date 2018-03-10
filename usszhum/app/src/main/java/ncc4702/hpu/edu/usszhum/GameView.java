@@ -32,7 +32,7 @@ import java.util.Random;
  * Created by Daniel Gallardo on 2/25/2018.
  */
 
-public class CannonView extends SurfaceView implements SurfaceHolder.Callback {
+public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = "CannonView";//for logging errors
 
     //constants for game play
@@ -44,7 +44,7 @@ public class CannonView extends SurfaceView implements SurfaceHolder.Callback {
     public static final double CANNON_BARREL_WIDTH_PERCENT = 3.0 / 40;
     public static final double CANNON_BARREL_LENGTH_PERCENT = 1.0 / 10;
 
-    //constants for the Cannonball
+    //constants for the Player
     public static final double CANNONBALL_RADIUS_PERCENT = 3.0 / 80;
     public static final double CANNONBALL_SPEED_PERCENT = 3.0 / 2;
 
@@ -57,7 +57,7 @@ public class CannonView extends SurfaceView implements SurfaceHolder.Callback {
     public static final double TARGET_MIN_SPEED_PERCENT = 3.0 / 4;
     public static final double TARGET_MAX_SPEED_PERCENT = 6.0 / 4;
 
-    //constants for the Blocker
+    //constants for the Obstacle
     public static final double BLOCKER_WIDTH_PERCENT = 1.0 / 40;
     public static final double BLOCKER_LENGTH_PERCENT = 1.0 / 4;
     public static final double BLOCKER_X_PERCENT = 1.0 / 2;
@@ -72,8 +72,8 @@ public class CannonView extends SurfaceView implements SurfaceHolder.Callback {
 
     //game objects
     private Cannon cannon;
-    private Blocker blocker;
-    private ArrayList<Target> targets;
+    private Obstacle mObstacle;//USED TO BE BLOCKER
+    private ArrayList<Obstacle> targets;//USED TO BE TARGETS
 
     //dimension variables
     private int screenWidth;
@@ -97,7 +97,8 @@ public class CannonView extends SurfaceView implements SurfaceHolder.Callback {
     private Paint backgroundPaint; //paint used to clear the drawing area
 
     //6.4.8 Adding the CannonView to fragment_main.xml
-    public CannonView(Context context, AttributeSet attrs) {
+    @SuppressLint("NewApi")//DOES MAGIC STUFF
+    public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);//call superclass constructor
         activity = (Activity) context; //store reference to MainActivity
 
@@ -116,9 +117,10 @@ public class CannonView extends SurfaceView implements SurfaceHolder.Callback {
 
         //create Map of sounds and pre-load sounds
         soundMap = new SparseIntArray(3); //create new SparseIntArray
-        soundMap.put(TARGET_SOUND_ID, soundPool.load(context, R.raw.target_hit, 1));
-        soundMap.put(CANNON_SOUND_ID, soundPool.load(context, R.raw.cannon_fire, 1));
-        soundMap.put(BLOCKER_SOUND_ID, soundPool.load(context, R.raw.blocker_hit, 1));
+        //TODO CURRENTLY COMMENTED OUT AS THERE ARE NO SOUNDS YET
+//        soundMap.put(TARGET_SOUND_ID, soundPool.load(context, R.raw.target_hit, 1));
+//        soundMap.put(CANNON_SOUND_ID, soundPool.load(context, R.raw.cannon_fire, 1));
+//        soundMap.put(BLOCKER_SOUND_ID, soundPool.load(context, R.raw.blocker_hit, 1));
 
         textPaint = new Paint();
         backgroundPaint = new Paint();
@@ -174,24 +176,25 @@ public class CannonView extends SurfaceView implements SurfaceHolder.Callback {
             double velocity = screenHeight * (random.nextDouble() * (TARGET_MAX_SPEED_PERCENT - TARGET_MIN_SPEED_PERCENT) + TARGET_MIN_SPEED_PERCENT);
 
             //alternate Target colors between dark and light
-            int color = (n % 2 == 0) ? getResources().getColor(R.color.dark, getContext().getTheme()) : getResources().getColor(R.color.light, getContext().getTheme());
+            //int color = (n % 2 == 0) ? getResources().getColor(R.color.dark, getContext().getTheme()) : getResources().getColor(R.color.light, getContext().getTheme());
 
             velocity *= -1; //reverse the initial velocity for next Target
 
             //create and add a new Target to the Target list
-            targets.add(new Target(this, color, HIT_REWARD, targetX, targetY, (int) (TARGET_WIDTH_PERCENT * screenWidth), (int) (TARGET_LENGTH_PERCENT * screenHeight), (int) velocity));
+            //TODO PROBABLY NEED THIS BUT NEEDS TO BE MODIFIED PROPERLY
+            targets.add(new Obstacle(this, Color.BLACK, HIT_REWARD, targetX, targetY));
 
             //increase the x coordinate to position the next Target more to the right
             targetX += (TARGET_WIDTH_PERCENT + TARGET_SPACING_PERCENT) * screenWidth;
         }
 
-        //create a new Blocker
-        blocker = new Blocker(this, Color.BLACK, MISS_PENALTY,
-                (int) (BLOCKER_X_PERCENT * screenWidth),
-                (int) ((0.5 - BLOCKER_X_PERCENT / 2) * screenHeight),
-                (int) (BLOCKER_WIDTH_PERCENT * screenWidth),
-                (int) (BLOCKER_LENGTH_PERCENT * screenHeight),
-                (float) (BLOCKER_SPEED_PERCENT) * screenHeight);
+        //create a new Obstacle. OBSTACLES USED TO BE BLOCKER
+//        mObstacle = new Obstacle(this, Color.BLACK, MISS_PENALTY,
+//                (int) (BLOCKER_X_PERCENT * screenWidth),
+//                (int) ((0.5 - BLOCKER_X_PERCENT / 2) * screenHeight),
+//                (int) (BLOCKER_WIDTH_PERCENT * screenWidth),
+//                (int) (BLOCKER_LENGTH_PERCENT * screenHeight),
+//                (float) (BLOCKER_SPEED_PERCENT) * screenHeight);
 
         timeLeft = 10; //start the countdown at 10 seconds
 
@@ -208,14 +211,15 @@ public class CannonView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     //called repeatedly by the CannonThread to update game elements
+    //TODO THIS PART NEEDS A BIT OF WORK
     private void updatePositions(double totalElapsedTimeMS) {
         double interval = totalElapsedTimeMS / 1000.0; //convert to seconds
 
         //update cannonball's position if it is on the screen
-        if (cannon.getCannonball() != null)
-            cannon.getCannonball().update(interval);
+        if (cannon.getPlayer() != null)
+            cannon.getPlayer().update(interval);
 
-        blocker.update(interval);// update the blocker's position
+        //mObstacle.update(interval);// update the mObstacle's position WAS COMMENTED OUT
 
         for (GameElement target : targets)
             target.update(interval);//update the target's position
@@ -229,6 +233,7 @@ public class CannonView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         //if all pieces have been hit
+
         if (targets.isEmpty()) {
             cannonThread.setRunning(false);//terminate thread
             showGameOverDialog(R.string.win);//show winning dialog
@@ -252,11 +257,11 @@ public class CannonView extends SurfaceView implements SurfaceHolder.Callback {
         //point the barrel at thte point where the scree was touched
         cannon.align(angle);
 
-        //fire Cannonball if there is not already a Cannonball on screen
-        if (cannon.getCannonball() == null || !cannon.getCannonball().isOnScreen()) {
-            cannon.fireCannonball();
-            ++shotsFired;
-        }
+        //fire Player if there is not already a Player on screen
+//        if (cannon.getPlayer() == null || !cannon.getPlayer().isOnScreen()) {
+//            cannon.fireCannonball();
+//            ++shotsFired;
+//        }
     }
     @SuppressLint("ValidFragment")
     //display an AlertDialog when the game ends
@@ -312,47 +317,48 @@ public class CannonView extends SurfaceView implements SurfaceHolder.Callback {
         cannon.draw(canvas);//draw the cannon
 
         //draw the GameElements
-        if(cannon.getCannonball() != null && cannon.getCannonball().isOnScreen()) cannon.getCannonball().draw(canvas);
+        //cannon.getPlayer().draw(canvas);//THIS USED TO BE AN IF STATEMENT DO NOT NEED
 
-        blocker.draw(canvas);//draw the blocker
+        //mObstacle.draw(canvas);//draw the mObstacle//DONT HAVE THAT
 
         //draw all of the Targets
         for(GameElement target : targets)
             target.draw(canvas);
     }
 
-    //checks if the ball collides with the Blocker or any of the Targets and handles the collisions
+    //checks if the ball collides with the Obstacle or any of the Targets and handles the collisions
     public void testForCollisions(){
-        //remove any of the targets that the Cannonball collides with
-        if(cannon.getCannonball() != null && cannon.getCannonball().isOnScreen()){
-            for(int n = 0; n < targets.size();n++){
-                if(cannon.getCannonball().collidesWith(targets.get(n))){
-                    targets.get(n).playSound();//play Target hit sound
+        //remove any of the targets that the Player collides with
+//        if(cannon.getPlayer() != null){//IF DOES NEED TO CHANGE
+//            for(int n = 0; n < targets.size();n++){
+//                if(cannon.getPlayer().collidesWith(targets.get(n))){
+//                    targets.get(n).playSound();//play Target hit sound
+//
+//                    //add hit rewards time to remaining time
+//                    timeLeft += targets.get(n).getHitReward();
+//
+//                    cannon.removeCannonball();//remove Player from the game
+//                    targets.remove(n);//remove the Target that was hit
+//                    --n;
+//                    break;
+//                }
+//            }
+//        }
+//        else{//remove the Player if it should not be on the screen
+//            cannon.removeCannonball();
+//        }
 
-                    //add hit rewards time to remaining time
-                    timeLeft += targets.get(n).getHitReward();
-
-                    cannon.removeCannonball();//remove Cannonball from the game
-                    targets.remove(n);//remove the Target that was hit
-                    --n;
-                    break;
-                }
-            }
-        }
-        else{//remove the Cannonball if it should not be on the screen
-            cannon.removeCannonball();
-        }
-
-        //chek if ball collides with blocker
-        if(cannon.getCannonball() != null && cannon.getCannonball().collidesWith(blocker)){
-            blocker.playSound();
-
-            //reverse ball direction
-            cannon.getCannonball().reverseVelocityX();
-
-            //deduct blocker's miss penalty from remaining time
-            timeLeft -= blocker.getMissPenalty();
-        }
+        //check if ball collides with mObstacle
+        //TODO FIX THIS SHIZ
+//        if(cannon.getPlayer().collidesWith(mObstacle)){
+//            mObstacle.playSound();
+//
+//            //reverse ball direction
+//            //cannon.getPlayer().reverseVelocityX();DONT NEED IT
+//
+//            //deduct mObstacle's miss penalty from remaining time
+//            timeLeft -= mObstacle.getHitPenalty();//WAS getMissPenalty now getHitPenalty
+//        }
     }
 
     //stops the game: called by CannonGameFragment's onPause method
@@ -445,7 +451,7 @@ public class CannonView extends SurfaceView implements SurfaceHolder.Callback {
                         long currentTime = System.currentTimeMillis();
                         double elapsedTimeMS = currentTime-previousFrameTime;
                         totalElapsedTime+=elapsedTimeMS/1000.0;
-                        updatePositions(elapsedTimeMS);//update game state
+                        //updatePositions(elapsedTimeMS);//update game state//THIS WAS COMMENTED OUT
                         testForCollisions();//test for GameElement collisions
                         drawGameElements(canvas);//draw using the canvas
                         previousFrameTime = currentTime;//update previous time
