@@ -182,7 +182,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
             //create and add a new Target to the Target list
             //TODO PROBABLY NEED THIS BUT NEEDS TO BE MODIFIED PROPERLY
-            //targets.add(new Target(this, color, HIT_REWARD, targetX, targetY, (int) (TARGET_WIDTH_PERCENT * screenWidth), (int) (TARGET_LENGTH_PERCENT * screenHeight), (int) velocity));
+            targets.add(new Obstacle(this, Color.BLACK, HIT_REWARD, targetX, targetY));
 
             //increase the x coordinate to position the next Target more to the right
             targetX += (TARGET_WIDTH_PERCENT + TARGET_SPACING_PERCENT) * screenWidth;
@@ -219,7 +219,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         if (cannon.getPlayer() != null)
             cannon.getPlayer().update(interval);
 
-        mObstacle.update(interval);// update the mObstacle's position
+        //mObstacle.update(interval);// update the mObstacle's position WAS COMMENTED OUT
 
         for (GameElement target : targets)
             target.update(interval);//update the target's position
@@ -317,9 +317,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         cannon.draw(canvas);//draw the cannon
 
         //draw the GameElements
-        cannon.getPlayer().draw(canvas);//THIS USED TO BE AN IF STATEMENT
+        //cannon.getPlayer().draw(canvas);//THIS USED TO BE AN IF STATEMENT DO NOT NEED
 
-        mObstacle.draw(canvas);//draw the mObstacle
+        //mObstacle.draw(canvas);//draw the mObstacle//DONT HAVE THAT
 
         //draw all of the Targets
         for(GameElement target : targets)
@@ -349,15 +349,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 //        }
 
         //check if ball collides with mObstacle
-        if(cannon.getPlayer().collidesWith(mObstacle)){
-            mObstacle.playSound();
-
-            //reverse ball direction
-            //cannon.getPlayer().reverseVelocityX();DONT NEED IT
-
-            //deduct mObstacle's miss penalty from remaining time
-            timeLeft -= mObstacle.getHitPenalty();//WAS getMissPenalty now getHitPenalty
-        }
+        //TODO FIX THIS SHIZ
+//        if(cannon.getPlayer().collidesWith(mObstacle)){
+//            mObstacle.playSound();
+//
+//            //reverse ball direction
+//            //cannon.getPlayer().reverseVelocityX();DONT NEED IT
+//
+//            //deduct mObstacle's miss penalty from remaining time
+//            timeLeft -= mObstacle.getHitPenalty();//WAS getMissPenalty now getHitPenalty
+//        }
     }
 
     //stops the game: called by CannonGameFragment's onPause method
@@ -450,7 +451,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                         long currentTime = System.currentTimeMillis();
                         double elapsedTimeMS = currentTime-previousFrameTime;
                         totalElapsedTime+=elapsedTimeMS/1000.0;
-                        updatePositions(elapsedTimeMS);//update game state
+                        //updatePositions(elapsedTimeMS);//update game state//THIS WAS COMMENTED OUT
                         testForCollisions();//test for GameElement collisions
                         drawGameElements(canvas);//draw using the canvas
                         previousFrameTime = currentTime;//update previous time
