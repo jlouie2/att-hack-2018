@@ -9,7 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 
-
+//DON'T NEED THE CLASS JUST THINGS IN THE CLASS
 public class Cannon {
     private int baseRadius;//Cannon base's radius
     private int barrelLength; //Cannon barrel's length
@@ -48,7 +48,7 @@ public class Cannon {
         int radius = (int) (view.getScreenHeight()* GameView.CANNONBALL_RADIUS_PERCENT);
 
         //construct Player and position it in the Cannon
-        mPlayer = new Player(view, Color.BLACK, GameView.CANNON_SOUND_ID, -radius, view.getScreenHeight()/2 -radius, radius, velocityX, velocityY);
+        //mPlayer = new Player(view, Color.BLACK, GameView.CANNON_SOUND_ID, -radius, view.getScreenHeight()/2 -radius, radius, velocityX, velocityY);
 
         mPlayer.playSound();//play fire Player sound
     }
