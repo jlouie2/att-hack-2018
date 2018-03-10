@@ -17,7 +17,11 @@ public class Stuff {
         {
             for(int j = 0; j < data[i].length;j++)
             {
-                switch(data[i][j])
+                int count = 0;
+
+                while((j + count) < data[i].length && data[i][(j+1) + count] != 0) count++;
+
+                switch(count)
                 {
                     case 0:
                         gameobjects[i][j] = null;
@@ -35,24 +39,24 @@ public class Stuff {
                         gameobjects[i][j++] = gameobjects[i][j-1];
                         break;
                     case 4:
-                        int count = 4;
+                        int counter = 4;
                         while(count >=0)
                         {
-                            switch(new Random().nextInt(count)) {
+                            switch(new Random().nextInt(counter)) {
                                 case 1:
                                     gameobjects[i][j] = new Student(view, -1, -1, -1, -1);
-                                    count -= 1;
+                                    counter -= 1;
                                     break;
                                 case 2:
                                     gameobjects[i][j++] = new Trash(view, -1, -1, -1, -1);
                                     gameobjects[i][j - 1] = gameobjects[i][j];
-                                    count -= 2;
+                                    counter -= 2;
                                     break;
                                 case 3:
                                     gameobjects[i][j++] = new ThreeBlock(view, -1, -1, -1, -1);
                                     gameobjects[i][j++] = gameobjects[i][j - 1];
                                     gameobjects[i][j++] = gameobjects[i][j - 1];
-                                    count -=3;
+                                    counter -=3;
                                     break;
                             }
 
