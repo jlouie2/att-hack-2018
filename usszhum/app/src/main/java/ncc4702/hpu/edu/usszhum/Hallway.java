@@ -76,10 +76,50 @@ public class Hallway extends GameElement{
 //
 //        cannonball.playSound();
     }
+
+    public ArrayList<GameElement[]> getGameElements(){
+        return gameElements;
+    }
+
 //    returns the Cannonball that this Cannon fired
-//    public Cannonball getCannonball(){
-//        return cannonball;
-//    }
+    public GameElement[] getRow(int i){
+        return gameElements.get(i);
+    }
+
+    public GameElement getObstacle(int r, int i){
+        return gameElements.get(r)[i];
+    }
+
+    public void updateElements(double interval){
+        Log.d("UPDATEELEENT:", "size:" + gameElements.size());
+
+        for(int i = 0; i < gameElements.size(); i++){
+            for(int j = 0; j < gameElements.get(i).length; j++){
+                if(getObstacle(i,j) != null){
+                    getObstacle(i,j).update(interval);
+                }
+
+            }
+        }
+//        for(GameElement[] row: gameElements){
+//            for(GameElement obs: row){
+//                if(obs != null){
+//                    obs.update(interval);
+//                }
+//            }
+//        }
+    }
+
+    public void drawElements(Canvas canvas){
+        for(GameElement[] row: gameElements){
+            for(GameElement obs: row){
+                if(obs != null){
+                    Log.d("DRAWCANVAS", "Row:" + row + " obs lef:"+obs.shape.left + " obs bot: " + obs.shape.bottom);
+                    obs.draw(canvas);
+                }
+            }
+        }
+    }
 
     //removes the Cannonball from the game
 //    public void removeGameElement(){

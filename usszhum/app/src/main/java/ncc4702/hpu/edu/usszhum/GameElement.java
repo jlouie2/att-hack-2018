@@ -7,6 +7,7 @@ package ncc4702.hpu.edu.usszhum;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 
 public class GameElement {
     protected GameView view; // the view that contains this GameElement
@@ -17,11 +18,7 @@ public class GameElement {
 
     //public constructor
     public GameElement(GameView view, int color, int soundId, int x,
-<<<<<<< HEAD
-                        int y, int width, int height, int velocityY){
-=======
                         int y, int width, int height, float velocityY){
->>>>>>> origin/Tyler
         this.view = view;
         this.velocityY = velocityY;
         paint.setColor(color);
@@ -36,7 +33,9 @@ public class GameElement {
     //TODO Possible change here
     public void update(double interval){
         //update vertical position
-        shape.offset(0,(int) (velocityY*interval));
+//        shape.offset(0,(int) (velocityY*interval));
+//        shape.offset(1000,0);
+        shape.offsetTo(1000, 1000);
 
         //if this GameElement collides with the wall, reverse direction
 //        if(shape.top <0 && velocityY < 0 || shape.bottom > view.getScreenHeight() && velocityY >0)
@@ -45,7 +44,7 @@ public class GameElement {
 
     //draws this GameElement on the given Canvas
     public void draw(Canvas canvas){
-        canvas.drawRect(shape, paint);
+        Log.d("DRAW", "I exist"); canvas.drawRect(shape, paint);
     }
 
     //plays the sound that corresponds to this type of GameElement

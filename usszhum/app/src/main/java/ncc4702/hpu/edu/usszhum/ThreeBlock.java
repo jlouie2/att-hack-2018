@@ -6,7 +6,7 @@ package ncc4702.hpu.edu.usszhum;
 
 public class ThreeBlock extends Obstacle {//1x3 obstacle
 
-    public ThreeBlock(GameView view, int color, int hitPenalty, int y, int width) {
-        super(view, color, hitPenalty, y, width, 1, 2);
+    public ThreeBlock(GameView view, int color, int hitPenalty, int y, int width, float velocityY) {
+        super(view, color, hitPenalty, y, width, 1, 2, velocityY);
     }
 }

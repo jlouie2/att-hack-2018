@@ -39,6 +39,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = "GameView";//for logging errors
 
     //constants for game play
+    public static final int GPA_START = 100;
+    public static final int ONE_TILE_PENALTY = 5;
+    public static final int TWO_TILE_PENALTY = 10;
+    public static final int THREE_TILE_PENALTY = 15;
+
+    public static final double OBSTACLE_SPEED_PERCENTAGE =  1.0;
+
     public static final int MISS_PENALTY = 2; //seconds deducted on a miss
     public static final int HIT_REWARD = 3; //secondsadded on a hit
 
@@ -67,7 +74,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             {1,0,1,1,1},
             {0,0,0,0,0},
             {1,0,0,0,1},
-            {0,0,1,0,0}
+            {0,0,1,0,0},
+
 
     };
 
@@ -111,10 +119,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     //dimension variables
     private int screenWidth;
     private int screenHeight;
+    private int tileSize;
 
     //variables for the game loop and tracing statistics
     private boolean gameOver; //is the game over?
-    private double timeLeft; //time remaning in seconds
+    private int currentGPA;
     private int shotsFired; //shots the user has fired
     private double totalElapsedTime; //elapsed seconds
 
@@ -167,6 +176,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         screenWidth = w;
         screenHeight = h;
+        tileSize = screenWidth * HALLWAY_WIDTH_PERCENT;
 
         //configure text properties
         textPaint.setTextSize((int) (TEXT_SIZE_PERCENT * screenHeight));//THIS IS THE LINE WITH THE ERRORS
@@ -182,6 +192,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public int getScreenHeight() {
         return screenHeight;
     }
+
+    //get tile size
+    public int getTileSize() {return tileSize;}
 
     //plays a sound with the given soundId in soundMap
     public void playSound(int soundID) {
@@ -201,10 +214,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 HALLWAY_WIDTH_PERCENT * screenWidth,
                 level);
 
-
-        timeLeft = 20; //start the countdown at 10 seconds
-
-        shotsFired = 0; //set the initial number of shots fired
         totalElapsedTime = 0.0; //set the time elapsed to zero
 
         if (gameOver) {//start a new game after the last game ended
@@ -223,6 +232,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         if(this.hall.getDistanceRemaining() > 0){
             this.hall.update(interval);
+//            ArrayList<GameElement[]> obstacleRows = this.hall.getGameElements();
+//
+//            for(GameElement[] row: obstacleRows){
+//                for(GameElement obs: row){
+//                    if(obs != null){
+//                        obs.update(interval);
+//                    }
+//                }
+//            }
+            this.hall.updateElements(interval);
+
         }
 
 //
@@ -267,16 +287,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     break;
                 case 1:
                     Log.d(TAG, "Student");
-                    gameobjects[j] = new Student(view, -1, -1, -1, -1);
+                    gameobjects[j] = new Student(view, Color.BLACK, ONE_TILE_PENALTY, -view.getTileSize(), view.getTileSize(), (float)(view.getHeight() * OBSTACLE_SPEED_PERCENTAGE));
                     break;
                 case 2:
                     Log.d(TAG, "trash");
-                    gameobjects[j++] = new Trash(view, -1, -1, -1, -1);
+                    gameobjects[j++] = new Trash(view, Color.BLACK, TWO_TILE_PENALTY, -view.getTileSize(), view.getTileSize() * 2, (float)(view.getHeight() * OBSTACLE_SPEED_PERCENTAGE));
                     gameobjects[j - 1] = gameobjects[j];
                     break;
                 case 3:
                     Log.d(TAG, "ThreeBlock");
-                    gameobjects[j++] = new ThreeBlock(view, -1, -1, -1, -1);
+                    gameobjects[j++] = new ThreeBlock(view, Color.BLACK, THREE_TILE_PENALTY, -view.getTileSize(), view.getTileSize() * 3, (float)(view.getHeight() * OBSTACLE_SPEED_PERCENTAGE));
                     gameobjects[j++] = gameobjects[j - 1];
                     gameobjects[j++] = gameobjects[j - 1];
                     break;
@@ -287,18 +307,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                         switch (new Random().nextInt(counter)) {
                             case 1:
                                 Log.d(TAG, "student");
-                                gameobjects[j] = new Student(view, -1, -1, -1, -1);
+                                gameobjects[j] = new Student(view, Color.BLACK, ONE_TILE_PENALTY, -view.getTileSize(),  view.getTileSize(), (float)(view.getHeight() * OBSTACLE_SPEED_PERCENTAGE));
                                 counter -= 1;
                                 break;
                             case 2:
                                 Log.d(TAG, "trash");
-                                gameobjects[j++] = new Trash(view, -1, -1, -1, -1);
+                                gameobjects[j++] = new Trash(view, Color.BLACK, TWO_TILE_PENALTY, -view.getTileSize(), view.getTileSize() * 2, (float)(view.getHeight() * OBSTACLE_SPEED_PERCENTAGE));
                                 gameobjects[j - 1] = gameobjects[j];
                                 counter -= 2;
                                 break;
                             case 3:
                                 Log.d(TAG, "threeblock");
-                                gameobjects[j++] = new ThreeBlock(view, -1, -1, -1, -1);
+                                gameobjects[j++] = new ThreeBlock(view, Color.BLACK, THREE_TILE_PENALTY, -view.getTileSize(), view.getTileSize() * 3, (float)(view.getHeight() * OBSTACLE_SPEED_PERCENTAGE));
                                 gameobjects[j++] = gameobjects[j - 1];
                                 gameobjects[j++] = gameobjects[j - 1];
                                 counter -= 3;
@@ -383,7 +403,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     //draws the game to the given Canvas
     public void drawGameElements(Canvas canvas){
         //clear the background
-        //canvas.drawRect(0,0,canvas.getWidth(),canvas.getHeight(),backgroundPaint);
+        canvas.drawRect(0,0,canvas.getWidth(),canvas.getHeight(),backgroundPaint);
 
         //Tyler attempt here
 //        Bitmap bitfact = BitmapFactory.decodeResource(this.getResources(),R.drawable.player_1);
@@ -395,12 +415,26 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         //canvas.drawText("HELLO?????????",150,100,textPaint);
 
 
-//        cannon.draw(canvas);//draws the cannon
-        hall.draw(canvas);
+//      hallway
+        this.hall.draw(canvas);
 
+        //student
         Bitmap bitfact = BitmapFactory.decodeResource(this.getResources(),R.drawable.player_1);
         Bitmap resized = Bitmap.createScaledBitmap(bitfact,200,200,false);
         canvas.drawBitmap(resized,(screenWidth-200)/2,screenHeight-275,this.backgroundPaint);
+
+        //obstacles
+        this.hall.drawElements(canvas);
+//        ArrayList<GameElement[]> obstacleRows = this.hall.getGameElements();
+//
+//        for(GameElement[] row: obstacleRows){
+//            for(GameElement obs: row){
+//                if(obs != null){
+//                    Log.d("DRAWCANVAS", "Row:" + row + " obs:"+obs);
+//                    obs.draw(canvas);
+//                }
+//            }
+//        }
 
         //draw the GameElements
         //cannon.getPlayer().draw(canvas);//THIS USED TO BE AN IF STATEMENT DO NOT NEED
@@ -449,9 +483,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     //stops the game: called by CannonGameFragment's onPause method
     public void stopGame(){
-        if(cannonThread != null){
-            cannonThread.setRunning(false);//tell the thread to terminate
-        }
+        Log.d("STOP", "why?");
+//        if(cannonThread != null){
+//            cannonThread.setRunning(false);//tell the thread to terminate
+//        }
     }
 
     //release resources: called by CannonGame's onDestroy method
@@ -537,12 +572,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                         long currentTime = System.currentTimeMillis();
                         double elapsedTimeMS = currentTime-previousFrameTime;
                         totalElapsedTime+=elapsedTimeMS/1000.0;
+                        Log.d("COUNT", "ttlelapsed:" + totalElapsedTime);
                         updatePositions(elapsedTimeMS);//update game state//THIS WAS COMMENTED OUT
                         testForCollisions();//test for GameElement collisions
                         drawGameElements(canvas);//draw using the canvas
-//                        previousFrameTime = currentTime;//update previous time
+                        previousFrameTime = currentTime;//update previous time
                     }
                 }finally{
+                    Log.d("THREAD", "I've stopped");
                     //display canva's contents on the CannonView and enable other threads to use the Canvas
                     if(canvas != null)
                         surfaceHolder.unlockCanvasAndPost(canvas);

@@ -14,7 +14,7 @@ public class Player extends GameElement{
     //constructor
     //MODIFIED TO GET RID OF VELOCITY Y
     public Player(GameView view, int color, int soundId, int x, int y, int radius, float velocityX){
-        super(view, color, soundId,x,y,1,2,1);
+        super(view, color, soundId,x,y,1,2, (float) 1.0);
         this.velocityX = velocityX;
         //onScreen = true;POSSIBLY NOT NECESSARY
     }
